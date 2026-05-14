@@ -10,7 +10,17 @@ from collections.abc import Iterable
 from typing import Any, Dict, List, Optional, Tuple
 
 import torch
-from transformers.cache_utils import Cache, CacheLayerMixin, EncoderDecoderCache, HybridCache, HybridChunkedCache
+from transformers.cache_utils import Cache, CacheLayerMixin, EncoderDecoderCache
+try:
+    from transformers.cache_utils import HybridCache, HybridChunkedCache
+except ImportError:
+    class HybridCache(Cache):
+        def __init__(self, *args, **kwargs):
+            super().__init__()
+
+    class HybridChunkedCache(Cache):
+        def __init__(self, *args, **kwargs):
+            super().__init__()
 
 from QEfficient.customop import (
     CtxGatherFunc,
@@ -888,7 +898,7 @@ class QEffSlidingWindowCache:
         # Get the sliding_window_pattern from config
         sliding_window_pattern = getattr(
             config, "_sliding_window_pattern", getattr(config, "sliding_window_pattern", None)
-        )
+        ) or 5
 
         cache = cls(
             config,

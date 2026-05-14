@@ -29,12 +29,24 @@ from QEfficient.base import (
     QEFFCommonLoader,
 )
 from QEfficient.compile.compile_helper import compile
-from QEfficient.diffusers.pipelines.flux.pipeline_flux import QEffFluxPipeline
-from QEfficient.diffusers.pipelines.wan.pipeline_wan import QEffWanPipeline
-from QEfficient.diffusers.pipelines.wan.pipeline_wan_i2v import QEffWanImageToVideoPipeline
+try:
+    from QEfficient.diffusers.pipelines.flux.pipeline_flux import QEffFluxPipeline
+except Exception:
+    QEffFluxPipeline = None
+try:
+    from QEfficient.diffusers.pipelines.wan.pipeline_wan import QEffWanPipeline
+except Exception:
+    QEffWanPipeline = None
+try:
+    from QEfficient.diffusers.pipelines.wan.pipeline_wan_i2v import QEffWanImageToVideoPipeline
+except Exception:
+    QEffWanImageToVideoPipeline = None
 from QEfficient.exporter.export_hf_to_cloud_ai_100 import qualcomm_efficient_converter
 from QEfficient.generation.text_generation_inference import cloud_ai_100_exec_kv
-from QEfficient.peft import QEffAutoPeftModelForCausalLM
+try:
+    from QEfficient.peft import QEffAutoPeftModelForCausalLM
+except Exception:
+    QEffAutoPeftModelForCausalLM = None
 from QEfficient.transformers.transform import transform
 from QEfficient.utils import custom_format_warning
 from QEfficient.utils.logging_utils import logger

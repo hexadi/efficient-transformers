@@ -5,6 +5,7 @@
 #
 # -----------------------------------------------------------------------------
 
+import logging
 import copy
 from typing import List, Optional, Tuple, Type, Union
 
@@ -22,7 +23,6 @@ from transformers.models.gemma3.modeling_gemma3 import (
     Gemma3ForCausalLM,
     Gemma3ForConditionalGeneration,
     Gemma3TextModel,
-    logger,
     repeat_kv,
     rotate_half,
 )
@@ -30,6 +30,8 @@ from transformers.models.gemma3.modeling_gemma3 import (
 from QEfficient.customop.rms_norm import CustomRMSNorm
 from QEfficient.transformers.cache_utils import QEffSlidingWindowCache
 from QEfficient.transformers.modeling_attn_mask_utils import _create_causal_mask
+
+logger = logging.getLogger(__name__)
 from QEfficient.utils import constants
 from QEfficient.utils._utils import IOInfo
 from QEfficient.utils.constants import MIN_MASKED_ATTENTION_VALUE

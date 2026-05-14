@@ -183,9 +183,14 @@ from transformers.models.qwen2_5_vl.modeling_qwen2_5_vl import (
     Qwen2_5_VLTextModel,
     Qwen2_5_VLVisionAttention,
 )
-from transformers.models.qwen2_5_vl.modeling_qwen2_5_vl import (
-    Qwen2RMSNorm as Qwen2_5RMSNorm,
-)
+try:
+    from transformers.models.qwen2_5_vl.modeling_qwen2_5_vl import (
+        Qwen2RMSNorm as Qwen2_5RMSNorm,
+    )
+except ImportError:
+    from transformers.models.qwen2_5_vl.modeling_qwen2_5_vl import (
+        Qwen2_5_VLRMSNorm as Qwen2_5RMSNorm,
+    )
 from transformers.models.qwen3.modeling_qwen3 import (
     Qwen3Attention,
     Qwen3DecoderLayer,

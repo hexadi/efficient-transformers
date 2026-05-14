@@ -494,15 +494,20 @@ class QEffGemma4ForCausalLM(Gemma4ForCausalLM):
         )
 
     def get_dummy_pkv_cache(self, config, batch_size, seq_len):
-        n_heads = config.num_key_value_heads
         local_d_head = getattr(config, "head_dim", config.hidden_size // config.num_attention_heads)
         global_d_head = getattr(config, "global_head_dim", local_d_head)
         sliding_window = min(getattr(config, "sliding_window", seq_len), seq_len)
         layer_types = getattr(config, "layer_types", ["sliding_attention"] * config.num_hidden_layers)
+        text_model = getattr(getattr(self, "model", None), "language_model", getattr(self, "model", None))
+        layers = getattr(text_model, "layers", None)
         past_key_values = []
         for i in range(config.num_hidden_layers):
             is_full = layer_types[i] == "full_attention"
             d_head = global_d_head if is_full else local_d_head
+            layer = layers[i] if layers is not None and i < len(layers) else None
+            attn = getattr(layer, "self_attn", None)
+            k_proj = getattr(attn, "k_proj", None)
+            n_heads = getattr(k_proj, "out_features", config.num_key_value_heads * d_head) // d_head
             ctx_len = seq_len if is_full else sliding_window
             cache_shape = [batch_size, n_heads, ctx_len, d_head]
             new_layer_key_cache = torch.zeros(cache_shape, dtype=self.config.torch_dtype)

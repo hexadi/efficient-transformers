@@ -800,10 +800,13 @@ class QEffGemma4ForConditionalGeneration(Gemma4ForConditionalGeneration):
             constants.ONNX_EXPORT_EXAMPLE_BATCH_SIZE,
             constants.ONNX_EXPORT_EXAMPLE_SEQ_LEN,
         )
+        patch_embedder = getattr(self.model.vision_tower, "patch_embedder", None)
+        input_proj = getattr(patch_embedder, "input_proj", None)
+        vision_feature_size = getattr(input_proj, "in_features", self.config.vision_config.hidden_size)
         inputs_shapes["pixel_values"] = (
             constants.ONNX_EXPORT_EXAMPLE_BATCH_SIZE,
             252,
-            self.config.vision_config.hidden_size,
+            vision_feature_size,
         )
         inputs_shapes["image_idx"] = (1, 1)
 
